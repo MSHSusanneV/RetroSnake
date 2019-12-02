@@ -16,8 +16,14 @@ We are presenting it by using almost all the gaming concepts and tools presented
 There is one player who controls the direction of movement of a "snake", starting small and growing after catching each piece of food that is generated randomly on the game board. The growing length of the snake increases the difficulty of the game as it goes. The game ends when the snake tries to bite itself or hits a border of the game board.
 The player's score is proportional to the amount of "eaten" food.
 
+### Iteration 1: Game objects
 
-### Iteration 1 : The web page
+Create classes and objects for:
+   1. Game object (board, state updates, collision detection)
+   2. Snake (graphics, current shape, position, direction, movement)
+   3. Food
+
+### Iteration 2 : The web page
 
 Design the page (HTML and CSS):
    1. Game Board (canvas)
@@ -26,13 +32,6 @@ Design the page (HTML and CSS):
    4. Game navigation buttons (up, down, left, right) 
    5. Display of the current score
    6. Display the "game over" message
-
-### Iteration 2: Game objects
-
-Create classes and objects for:
-   1. Game object (board, state updates, collision detection)
-   2. Snake (graphics, current shape, position, direction, movement)
-   3. Food
 
 ### Iteration 3: Deploy and test 
 
