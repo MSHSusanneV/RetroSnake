@@ -1,7 +1,5 @@
 class GameBoard {
   constructor(width, height, speed) {
-    this.width = width;
-    this.height = height;
     this.canvas = document.createElement("canvas");
     document.body.appendChild(this.canvas);
     this.canvas.width = width;
@@ -15,6 +13,10 @@ class GameBoard {
     this.score = 0;
     this.foodWeight = 1;
     this.gameSpeed = speed;
+    this.eatSound = null;
+    this.crashSound = null;
+    this.createSound();
+    this.objectThickness = 10;
   }
 
   startGame() {
@@ -26,12 +28,14 @@ class GameBoard {
   proceedGame() {
     this.snake.moveSnake();   
     if (this.snake.isCollision()) {
+      this.crashSound.play();
       this.stopGame();
       return;
     }
     if (this.snake.foundFood(this.food)) {
       this.snake.eat(this.food);
       this.score += this.food.weight;
+      this.eatSound.play();
       document.getElementById("score").innerHTML = "Score: " + this.score;
       let isFood = false;
       while (!isFood) {
@@ -52,47 +56,65 @@ class GameBoard {
     switch (boardSide) {
       case 1:
         this.snake = new SnakeShape(this.canvas.width/2, 0, 
-          0, 1, 10, this.ctx, this.canvas.width, this.canvas.height);
+          0, 1, this.objectThickness, this.ctx, this.canvas.width, this.canvas.height);
         foodx = this.canvas.width*0.75; 
         foody = this.canvas.height*0.75;         
         break;
       case 2:
-        this.snake = new SnakeShape(this.canvas.width, (this.canvas.height - 10)/2, 
-          -1, 0, 10, this.ctx, this.canvas.width, this.canvas.height);
+        this.snake = new SnakeShape(this.canvas.width, (this.canvas.height - this.objectThickness)/2, 
+          -1, 0, this.objectThickness, this.ctx, this.canvas.width, this.canvas.height);
         foodx = this.canvas.width*0.25;
         foody = this.canvas.height*0.75;
         //this.food = new Food(this.canvas.width*0.25, this.canvas.height*0.75, 10, 1, this.ctx);  
         break;
       case 3:
         this.snake = new SnakeShape(this.canvas.width/2, this.canvas.height, 
-          0, -1, 10, this.ctx, this.canvas.width, this.canvas.height);
+          0, -1, this.objectThickness, this.ctx, this.canvas.width, this.canvas.height);
         foodx = this.canvas.width*0.25;
         foody = this.canvas.height*0.25;
         //this.food = new Food(this.canvas.width*0.25, this.canvas.height*0.25, 10, 1, this.ctx);  
         break;         
       case 4:
-          this.snake = new SnakeShape(0, (this.canvas.height - 10)/2, 
-            1, 0, 10, this.ctx, this.canvas.width, this.canvas.height);
+          this.snake = new SnakeShape(0, (this.canvas.height - this.objectThickness)/2, 
+            1, 0, this.objectThickness, this.ctx, this.canvas.width, this.canvas.height);
           foodx = this.canvas.width*0.75;
           foody = this.canvas.height*0.25;
           //this.food = new Food(this.canvas.width*0.75, this.canvas.height*0.25, 10, 1, this.ctx);  
           break;         
       default:  
     }
-    this.food = new Food(foodx - foodx % 10, foody - foody % 10, 10, this.foodWeight, this.ctx);  
+    this.food = new Food(foodx - foodx % this.objectThickness, foody - foody % this.objectThickness, 
+                         this.objectThickness, this.foodWeight, this.ctx);  
   }
 
   createFood() {
     let foodx = Math.floor(Math.random()*this.canvas.width);
     let foody = Math.floor(Math.random()*this.canvas.height);
-    let gridx = foodx - foodx % 10;
-    let gridy = foody - foody % 10;    
+    let gridx = foodx - foodx % this.objectThickness;
+    let gridy = foody - foody % this.objectThickness;    
     let seg = null;
     for (seg in this.snake.body) 
       if (seg.x === gridx && seg.y === gridy) return false;
-    this.food = new Food(gridx, gridy, this.snake.width, this.foodWeight, this.ctx);
+    this.food = new Food(gridx, gridy, this.objectThickness, this.foodWeight, this.ctx);
     return true;
   }
+
+  createSound() {
+    this.eatSound = document.createElement("audio");
+    this.eatSound.src = "src/eat-sound.mp3";
+    this.eatSound.setAttribute("preload", "auto");
+    this.eatSound.setAttribute("controls", "none");
+    this.eatSound.style.display = "none";
+    document.body.appendChild(this.eatSound);
+
+    this.crashSound = document.createElement("audio");
+    this.crashSound.src = "src/crash-sound.mp3";
+    this.crashSound.setAttribute("preload", "auto");
+    this.crashSound.setAttribute("controls", "none");
+    this.crashSound.style.display = "none";
+    document.body.appendChild(this.crashSound);
+  }
+
 }
 
 class Food {
@@ -203,6 +225,6 @@ class SnakeShape extends MovingCurve {
   }
 }
 
-let game = new GameBoard(280, 170, 200);   //(480, 270);
+let game = new GameBoard(280, 170, 300);   //(480, 270);
 game.startGame();
 
