@@ -6,9 +6,45 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Snake Retro Game</title>
         <link rel="stylesheet" href="./src/styles.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     </head>
     <body>
-      <h3 id="score">Score: 0</h3>
-      <script src="./src/game.js"></script>
+      
+      <div id="score" class="game-control">
+          <h2 id="score-head"> Score:</h2>
+          <h2 id="score-val"></h2>
+       </div>       
+    <div id="main">
+      <div id="game-start" class="game-control">
+            <!-- img src= "./Images/Download.png" alt ="logo snake"/>-->
+            <div id="left-nav">
+              <h3>LEVEL: </h3>
+              <nav class="nav-bar">
+                <ul>
+                    <li>Slug</li>
+                    <li>Worm</li>
+                    <li>Python</li>
+                 </ul>
+              </nav>
+            </div>
+            <div id="right-nav">
+              <button id="play-btn" type="button"> <i class="material-icons" id="left" style="color: white;">play_arrow</i></button>  
+            </div>
+      </div>
+      <div id="game-nav" class="game-control" >
+        
+        <div id="nav-arrows" >
+          <div class="vert-btn"> <button id="left" class="nav-btn"><i class="material-icons" style="color:white;">arrow_back</i> </button> </div>
+          <div class="vert-btn"> <button id="up" class="nav-btn"><i class="material-icons"  style="color:white;">arrow_upward</i> </button> <button id="down" class="nav-btn"><i class="material-icons"  style="color: white;">arrow_downward</i></button>       </div>
+          <div class="vert-btn"> <button id="right" class="nav-btn"><i class="material-icons"  style="color:white;">arrow_forward</i></button>     </div>
+        </div>
+        
+      </div> 
+      <div id="game-over" class="game-control">
+        <h2>GAME OVER!</h2>
+      </div>
+    </div>
+    <script src="./src/game.js"></script>
     </body>
 </html>
