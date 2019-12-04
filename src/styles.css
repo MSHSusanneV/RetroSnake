@@ -1,3 +1,52 @@
 body {
   font-family: sans-serif;
 }
+
+body button {
+font-size: 20px;
+  color: white;
+background-color: black;
+border: 3; 
+padding: 20px 40px;
+
+}
+#game-nav {
+  visibility: hidden;
+}
+
+.game-control  {
+  width: 280px;
+  display: flex;
+  justify-content: space-evenly;
+  
+}
+
+#score {
+  display: flex;
+  justify-content: ;
+  flex-direction: row;
+  border: 10px; 
+
+}
+
+#nav-arrows {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  margin: 20px;
+}
+
+.nav-btn {
+  width: 5rem;
+  display: flex;
+  justify-content: center;
+  }
+
+#right-nav  {
+  display: flex;
+  justify-content: center;
+  padding: 5px;
+  margin: 20px;
+}
+

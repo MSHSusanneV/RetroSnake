@@ -1,7 +1,8 @@
 class GameBoard {
   constructor(width, height, speed) {
     this.canvas = document.createElement("canvas");
-    document.body.appendChild(this.canvas);
+    // document.body.appendChild(this.canvas);
+    document.body.insertBefore(this.canvas, document.body.childNodes[2]);
     this.canvas.width = width;
     this.canvas.height = height;
     this.ctx = this.canvas.getContext("2d");
@@ -17,13 +18,49 @@ class GameBoard {
     this.crashSound = null;
     this.createSound();
     this.objectThickness = 10;
-  }
+    this.startGame = this.startGame.bind(this);
+    document.getElementById("play-btn").onclick = this.startGame;
+ }
 
   startGame() {
     this.initGameObjects();
     this.proceedGame = this.proceedGame.bind(this);
     this.interval = setInterval(this.proceedGame, this.gameSpeed);
+    document.getElementById("game-start").style.visibility = "hidden";
+    document.getElementById("game-start").remove();
+    this.buttonClick = this.buttonClick.bind(this);
+
+    document.getElementById("up").onclick = this.buttonClick;
+    document.getElementById("down").onclick = this.buttonClick;
+    document.getElementById("left").onclick = this.buttonClick;
+    document.getElementById("right").onclick = this.buttonClick;
+
+    document.getElementById("game-nav").style.visibility = "visible";
   }
+
+  buttonClick(e) {
+
+    switch (e.currentTarget.id) {
+      case "up": //turn up
+        console.log("up"); 
+        if (this.snake.ydir === 0) {this.snake.ydir = -1; this.snake.xdir = 0};
+        break;
+      case "down": //turn down
+        console.log("down"); 
+        if (this.snake.ydir === 0) {this.snake.ydir = 1; this.snake.xdir = 0};
+        break;
+      case "left": //turn left
+        console.log("left");   
+        if (this.snake.xdir === 0) {this.snake.xdir = -1; this.snake.ydir = 0};
+        break;
+      case "right": //turn right
+        console.log("right");   
+        if (this.snake.xdir === 0) {this.snake.xdir = 1; this.snake.ydir = 0};
+        break;
+      default:
+    }
+  }
+  
 
   proceedGame() {
     this.snake.moveSnake();   
@@ -36,7 +73,7 @@ class GameBoard {
       this.snake.eat(this.food);
       this.score += this.food.weight;
       this.eatSound.play();
-      document.getElementById("score").innerHTML = "Score: " + this.score;
+      document.getElementById("score-val").innerHTML = this.score;
       let isFood = false;
       while (!isFood) {
         isFood = this.createFood();
@@ -152,6 +189,7 @@ class MovingCurve {
     this.head = new ElementPosition (x, y);
     this.body =  [this.head];
 
+    
     document.onkeydown = e => {
       switch (e.keyCode) {
         case 38: //turn up
@@ -225,6 +263,6 @@ class SnakeShape extends MovingCurve {
   }
 }
 
-let game = new GameBoard(280, 170, 300);   //(480, 270);
-game.startGame();
+ let game = new GameBoard(280, 170, 300);   //(480, 270);
+// game.startGame();
 
