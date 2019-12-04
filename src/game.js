@@ -1,4 +1,3 @@
-//NEW BRANCH
 class GameBoard {
   constructor(width, height, speed) {
     this.canvas = document.createElement("canvas");
@@ -226,6 +225,6 @@ class SnakeShape extends MovingCurve {
   }
 }
 
-let game = new GameBoard(280, 170, 300);   //(480, 270);
+let game = new GameBoard(350, 250, 300);   //(480, 270);
 game.startGame();
 
