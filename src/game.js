@@ -26,7 +26,7 @@ class GameBoard {
     this.initGameObjects();
     this.proceedGame = this.proceedGame.bind(this);
     this.interval = setInterval(this.proceedGame, this.gameSpeed);
-    document.getElementById("game-start").style.visibility = "hidden";
+    //document.getElementById("game-start").style.visibility = "hidden";
     document.getElementById("game-start").remove();
     this.buttonClick = this.buttonClick.bind(this);
 
@@ -84,6 +84,8 @@ class GameBoard {
 
   stopGame() {
     clearInterval(this.interval);
+    document.getElementById("game-nav").remove();
+    document.getElementById("game-over").style.visibility = "visible";
   }
 
   initGameObjects() {

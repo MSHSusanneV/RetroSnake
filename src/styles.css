@@ -13,6 +13,9 @@ padding: 20px 40px;
 #game-nav {
   visibility: hidden;
 }
+#game-over {
+  visibility: hidden;
+}
 
 .game-control  {
   width: 280px;
@@ -23,7 +26,7 @@ padding: 20px 40px;
 
 #score {
   display: flex;
-  justify-content: ;
+  justify-content: space-evenly;
   flex-direction: row;
   border: 10px; 
 
