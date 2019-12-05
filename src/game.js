@@ -1,7 +1,7 @@
 class GameBoard {
-  constructor(width, height, speed) {
+  constructor(width, height) {
     this.canvas = document.createElement("canvas");
-    // document.body.appendChild(this.canvas);
+    //document.body.appendChild(this.canvas);
     document.body.insertBefore(this.canvas, document.body.childNodes[2]);
     this.canvas.width = width;
     this.canvas.height = height;
@@ -13,7 +13,7 @@ class GameBoard {
     this.interval = 0;
     this.score = 0;
     this.foodWeight = 1;
-    this.gameSpeed = speed;
+    this.gameSpeed = 1000;
     this.eatSound = null;
     this.crashSound = null;
     this.createSound();
@@ -24,12 +24,30 @@ class GameBoard {
 
   startGame() {
     this.initGameObjects();
+   
+    let levels = document.getElementsByName("level");
+    for (let i = 0; i < levels.length; i++) 
+      if (levels[i].checked) {
+        switch (levels[i].value) {
+          case "slug":
+            this.gameSpeed = 400;
+            break;
+          case "worm":
+            this.gameSpeed = 300;
+            break;
+          case "python":
+            this.gameSpeed = 200;
+            break;
+          default: 
+        }
+      }
+
     this.proceedGame = this.proceedGame.bind(this);
     this.interval = setInterval(this.proceedGame, this.gameSpeed);
-    //document.getElementById("game-start").style.visibility = "hidden";
-    document.getElementById("game-start").remove();
-    this.buttonClick = this.buttonClick.bind(this);
 
+    document.getElementById("game-start").remove();
+  
+    this.buttonClick = this.buttonClick.bind(this);
     document.getElementById("up").onclick = this.buttonClick;
     document.getElementById("down").onclick = this.buttonClick;
     document.getElementById("left").onclick = this.buttonClick;
@@ -265,6 +283,8 @@ class SnakeShape extends MovingCurve {
   }
 }
 
- let game = new GameBoard(280, 170, 300);   //(480, 270);
-// game.startGame();
+ let game = new GameBoard(280, 170);  // (480, 270);
+
+ 
+ 
 
