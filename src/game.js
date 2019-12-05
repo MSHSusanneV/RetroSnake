@@ -18,6 +18,7 @@ class GameBoard {
     this.crashSound = null;
     this.createSound();
     this.objectThickness = 10;
+    this.navEnabled = false;
     this.startGame = this.startGame.bind(this);
     document.getElementById("play-btn").onclick = this.startGame;
  }
@@ -42,45 +43,65 @@ class GameBoard {
         }
       }
 
-    this.proceedGame = this.proceedGame.bind(this);
-    this.interval = setInterval(this.proceedGame, this.gameSpeed);
-
     document.getElementById("game-start").remove();
-  
+
     this.buttonClick = this.buttonClick.bind(this);
     document.getElementById("up").onclick = this.buttonClick;
     document.getElementById("down").onclick = this.buttonClick;
     document.getElementById("left").onclick = this.buttonClick;
     document.getElementById("right").onclick = this.buttonClick;
+    
+    this.kbClick = this.kbClick.bind(this);
+    document.onkeydown = this.kbClick;
 
     document.getElementById("game-nav").style.visibility = "visible";
+
+    this.navEnabled = true;
+    this.proceedGame = this.proceedGame.bind(this);
+    this.interval = setInterval(this.proceedGame, this.gameSpeed);
+
   }
 
   buttonClick(e) {
-
+    if (!this.navEnabled) return;
     switch (e.currentTarget.id) {
       case "up": //turn up
-        console.log("up"); 
         if (this.snake.ydir === 0) {this.snake.ydir = -1; this.snake.xdir = 0};
         break;
       case "down": //turn down
-        console.log("down"); 
         if (this.snake.ydir === 0) {this.snake.ydir = 1; this.snake.xdir = 0};
         break;
       case "left": //turn left
-        console.log("left");   
         if (this.snake.xdir === 0) {this.snake.xdir = -1; this.snake.ydir = 0};
         break;
       case "right": //turn right
-        console.log("right");   
         if (this.snake.xdir === 0) {this.snake.xdir = 1; this.snake.ydir = 0};
         break;
       default:
     }
   }
-  
+
+  kbClick(e) {
+    if (!this.navEnabled) return;
+    switch (e.keyCode) {
+      case 38: //turn up
+        if (this.snake.ydir === 0) {this.snake.ydir = -1; this.snake.xdir = 0};
+        break;
+      case 40: //turn down
+        if (this.snake.ydir === 0) {this.snake.ydir = 1; this.snake.xdir = 0};
+        break;
+      case 37: //turn left
+        if (this.snake.xdir === 0) {this.snake.xdir = -1; this.snake.ydir = 0};
+        break;
+      case 39: //turn right
+        if (this.snake.xdir === 0) {this.snake.xdir = 1; this.snake.ydir = 0};
+        break;
+      default:
+    }
+  }
 
   proceedGame() {
+    this.navEnabled = false;
     this.snake.moveSnake();   
     if (this.snake.isCollision()) {
       this.crashSound.play();
@@ -88,16 +109,19 @@ class GameBoard {
       return;
     }
     if (this.snake.foundFood(this.food)) {
+      this.eatSound.play();
       this.snake.eat(this.food);
       this.score += this.food.weight;
-      this.eatSound.play();
       document.getElementById("score-val").innerHTML = this.score;
+      //this.eatSound.pause();
+
       let isFood = false;
       while (!isFood) {
         isFood = this.createFood();
       } 
-      return;
     } 
+    this.navEnabled = true;
+    return;
   }
 
   stopGame() {
@@ -140,18 +164,26 @@ class GameBoard {
           break;         
       default:  
     }
-    this.food = new Food(foodx - foodx % this.objectThickness, foody - foody % this.objectThickness, 
+    this.food = new Food(Math.round(foodx - foodx % this.objectThickness), Math.round(foody - foody % this.objectThickness), 
                          this.objectThickness, this.foodWeight, this.ctx);  
   }
 
   createFood() {
+
+
+    //this.snake.body.forEach((elem,i) => console.log("Snake elem " + i + ": " + elem.x + "," + elem.y));
+ 
     let foodx = Math.floor(Math.random()*this.canvas.width);
     let foody = Math.floor(Math.random()*this.canvas.height);
-    let gridx = foodx - foodx % this.objectThickness;
-    let gridy = foody - foody % this.objectThickness;    
+    let gridx = Math.round(foodx - foodx % this.objectThickness);
+    let gridy = Math.round(foody - foody % this.objectThickness);   
+    
+    //console.log("FOOD :", gridx, gridy);
+
     let seg = null;
-    for (seg in this.snake.body) 
+    for (seg in this.snake.body) {
       if (seg.x === gridx && seg.y === gridy) return false;
+    }
     this.food = new Food(gridx, gridy, this.objectThickness, this.foodWeight, this.ctx);
     return true;
   }
@@ -187,8 +219,6 @@ class Food {
     this.ctx.fillStyle = "red";
     this.ctx.fillRect(this.x, this.y, this.width, this.width);
   }
-
-
 }
 
 class ElementPosition {
@@ -209,24 +239,6 @@ class MovingCurve {
     this.head = new ElementPosition (x, y);
     this.body =  [this.head];
 
-    
-    document.onkeydown = e => {
-      switch (e.keyCode) {
-        case 38: //turn up
-          if (this.ydir === 0) {this.ydir = -1; this.xdir = 0};
-          break;
-        case 40: //turn down
-          if (this.ydir === 0) {this.ydir = 1; this.xdir = 0};
-          break;
-        case 37: //turn left
-          if (this.xdir === 0) {this.xdir = -1; this.ydir = 0};
-          break;
-        case 39: //turn right
-          if (this.xdir === 0) {this.xdir = 1; this.ydir = 0};
-          break;
-        default:
-      }
-    }
   }
 
   moveCurve() {
@@ -254,24 +266,17 @@ class SnakeShape extends MovingCurve {
   }
 
   foundFood(food) {
-    if (this.head.x === food.x && this.head.y === food.y) {
-      //console.log ("Mahlzeit!");
-      return true;
-    }
-    return false;
+    if (this.head.x === food.x && this.head.y === food.y) return true;
+    else return false;
   }
 
   eat(food) {
-    //console.log ("Danke!");
     this.body.push(this.lastTail);
     this.ctx.fillStyle = "green";
     this.ctx.fillRect(this.lastTail.x, this.lastTail.y, this.width, this.width); 
-
-
   }
 
   isCollision() {
-    
     if (this.head.x > this.xmax || this.head.x < 0) return true;
     if (this.head.y > this.ymax || this.head.y < 0) return true;
     let len = this.body.length;
@@ -283,7 +288,7 @@ class SnakeShape extends MovingCurve {
   }
 }
 
- let game = new GameBoard(280, 170);  // (480, 270);
+let game = new GameBoard(280, 170);  // (480, 270);
 
  
  
