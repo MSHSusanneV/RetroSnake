@@ -113,12 +113,14 @@ class GameBoard {
       this.snake.eat(this.food);
       this.score += this.food.weight;
       document.getElementById("score-val").innerHTML = this.score;
-      //this.eatSound.pause();
+      
+      //console.log("Food eaten :", this.food.x, this.food.y);
 
       let isFood = false;
       while (!isFood) {
         isFood = this.createFood();
       } 
+      //console.log("New food :", this.food.x, this.food.y);
     } 
     this.navEnabled = true;
     return;
@@ -181,7 +183,7 @@ class GameBoard {
     //console.log("FOOD :", gridx, gridy);
 
     let seg = null;
-    for (seg in this.snake.body) {
+    for (seg of this.snake.body) {
       if (seg.x === gridx && seg.y === gridy) return false;
     }
     this.food = new Food(gridx, gridy, this.objectThickness, this.foodWeight, this.ctx);
